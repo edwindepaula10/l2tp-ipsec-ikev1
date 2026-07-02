@@ -1,0 +1,12 @@
+ipcp-accept-local
+ipcp-accept-remote
+refuse-eap
+noccp
+noauth
+mtu 1410
+mru 1410
+nodefaultroute
+usepeerdns
+connect-delay 5000
+name Edwin
+password Edwin2024

@@ -1,0 +1,38 @@
+enable
+configure terminal
+hostname R-L2TP
+interface Ethernet0/0
+ ip address dhcp
+ no shutdown
+ crypto map CMAP-2415
+interface Ethernet0/1
+ ip address 10.24.15.1 255.255.255.0
+ no shutdown
+ip local pool POOL-L2TP 10.24.15.100 10.24.15.200
+crypto isakmp policy 10
+ encr aes 256
+ hash sha
+ authentication pre-share
+ group 14
+ lifetime 86400
+crypto isakmp key Edwin2024 address 0.0.0.0 0.0.0.0
+crypto ipsec transform-set TS-2415 esp-aes 256 esp-sha-hmac
+ mode transport
+crypto ipsec transform-set TS-2415B esp-aes esp-sha-hmac
+ mode transport
+crypto ipsec transform-set TS-2415C esp-3des esp-sha-hmac
+ mode transport
+crypto dynamic-map DMAP-2415 10
+ set transform-set TS-2415 TS-2415B TS-2415C
+crypto map CMAP-2415 10 ipsec-isakmp dynamic DMAP-2415
+vpdn enable
+vpdn-group L2TP-2415
+ accept-dialin
+  protocol l2tp
+  virtual-template 1
+ no l2tp tunnel authentication
+interface Virtual-Template1
+ ip unnumbered Ethernet0/1
+ peer default ip address pool POOL-L2TP
+ ppp authentication chap
+username Edwin password Edwin2024
